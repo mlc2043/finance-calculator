@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator | वित्तीय क्यालकुलेटर</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <!-- Language Toggle -->
+            <div class="language-toggle">
+                <button class="lang-btn active" onclick="switchLanguage('en')">English</button>
+                <button class="lang-btn" onclick="switchLanguage('np')">नेपाली</button>
+            </div>
+            
+            <h1 id="main-title">Financial Calculator</h1>
+            
+            <!-- Calculator Type Toggle -->
+            <div class="interest-toggle">
+                <button class="toggle-btn active" onclick="switchCalculatorType('simple')" data-en="Simple Interest" data-np="सरल ब्याज">Simple Interest</button>
+                <button class="toggle-btn" onclick="switchCalculatorType('compound')" data-en="Compound Interest" data-np="चक्रवृद्धि ब्याज">Compound Interest</button>
+                <button class="toggle-btn" onclick="switchCalculatorType('emi')" data-en="EMI Calculator" data-np="ईएमआई क्यालकुलेटर">EMI Calculator</button>
+                <button class="toggle-btn" onclick="switchCalculatorType('date')" data-en="Date Converter" data-np="मिति रूपान्तरक">Date Converter</button>
+            </div>
+            
+            <!-- Simple & Compound Interest Fields -->
+            <div id="interest-fields">
+                <div class="form-group">
+                    <label for="principal" data-en="Principal Amount (NPR)" data-np="मूल रकम (एनपीआर)">Principal Amount (NPR)</label>
+                    <input type="number" id="principal" placeholder="Enter principal amount" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="rate" data-en="Interest Rate (% per annum)" data-np="ब्याज दर (% प्रति वर्ष)">Interest Rate (% per annum)</label>
+                    <input type="number" id="rate" placeholder="Enter interest rate" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="time" data-en="Time Period" data-np="समय अवधि">Time Period</label>
+                    <div class="time-inputs">
+                        <input type="number" id="years" placeholder="Years" min="0" step="1">
+                        <input type="number" id="months" placeholder="Months" min="0" max="11" step="1">
+                        <input type="number" id="days" placeholder="Days" min="0" max="364" step="1">
+                    </div>
+                </div>
+                
+                <!-- Compound Interest Frequency (hidden by default) -->
+                <div class="form-group" id="frequency-group" style="display: none;">
+                    <label for="frequency" data-en="Compounding Frequency" data-np="चक्रवृद्धि आवृत्ति">Compounding Frequency</label>
+                    <select id="frequency">
+                        <option value="1" data-en="Annually" data-np="वार्षिक">Annually</option>
+                        <option value="2" data-en="Semi-annually" data-np="अर्धवार्षिक">Semi-annually</option>
+                        <option value="4" data-en="Quarterly" data-np="त्रैमासिक">Quarterly</option>
+                        <option value="12" data-en="Monthly" data-np="मासिक">Monthly</option>
+                        <option value="365" data-en="Daily" data-np="दैनिक">Daily</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- EMI Calculator Fields (hidden by default) -->
+            <div id="emi-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="loan-amount" data-en="Loan Amount (NPR)" data-np="ऋण रकम (एनपीआर)">Loan Amount (NPR)</label>
+                    <input type="number" id="loan-amount" placeholder="Enter loan amount" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="emi-rate" data-en="Interest Rate (% per annum)" data-np="ब्याज दर (% प्रति वर्ष)">Interest Rate (% per annum)</label>
+                    <input type="number" id="emi-rate" placeholder="Enter interest rate" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="loan-tenure" data-en="Loan Tenure" data-np="ऋण अवधि">Loan Tenure</label>
+                    <div class="tenure-inputs">
+                        <input type="number" id="tenure-years" placeholder="Years" min="0" step="1">
+                        <input type="number" id="tenure-months" placeholder="Months" min="0" max="11" step="1">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Date Converter Fields (hidden by default) -->
+            <div id="date-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="start-date" data-en="Start Date" data-np="सुरुवाती मिति">Start Date</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="form-group">
+                    <label for="end-date" data-en="End Date" data-np="अन्तिम मिति">End Date</label>
+                    <input type="date" id="end-date">
+                </div>
+                <div class="form-group">
+                    <label for="date-operation" data-en="Operation" data-np="कार्य">Operation</label>
+                    <select id="date-operation">
+                        <option value="difference" data-en="Calculate Difference" data-np="अन्तर गणना गर्नुहोस्">Calculate Difference</option>
+                        <option value="add" data-en="Add Days" data-np="दिनहरू थप्नुहोस्">Add Days</option>
+                        <option value="subtract" data-en="Subtract Days" data-np="दिनहरू घटाउनुहोस्">Subtract Days</option>
+                    </select>
+                </div>
+                <div class="form-group" id="days-input-group" style="display: none;">
+                    <label for="days-input" data-en="Number of Days" data-np="दिनहरूको संख्या">Number of Days</label>
+                    <input type="number" id="days-input" placeholder="Enter number of days" min="0" step="1">
+                </div>
+            </div>
+            
+            <button onclick="calculate()" id="calculate-btn" data-en="Calculate" data-np="गणना गर्नुहोस्">Calculate</button>
+            
+            <div class="results" id="results">
+                <!-- Interest Calculator Results -->
+                <div id="interest-results">
+                    <div class="result-item">
+                        <span class="label" id="interest-label" data-en="Simple Interest:" data-np="सरल ब्याज:">Simple Interest:</span>
+                        <span class="value" id="interest">NPR 0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Total Amount:" data-np="कुल रकम:">Total Amount:</span>
+                        <span class="value" id="total">NPR 0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Time Period:" data-np="समय अवधि:">Time Period:</span>
+                        <span class="value" id="timePeriod">0 years</span>
+                    </div>
+                    <div class="result-item" id="effective-rate-item" style="display: none;">
+                        <span class="label" data-en="Effective Annual Rate:" data-np="प्रभावकारी वार्षिक दर:">Effective Annual Rate:</span>
+                        <span class="value" id="effectiveRate">0.00%</span>
+                    </div>
+                </div>
+                
+                <!-- EMI Calculator Results -->
+                <div id="emi-results" style="display: none;">
+                    <div class="result-item">
+                        <span class="label" data-en="Monthly EMI:" data-np="मासिक ईएमआई:">Monthly EMI:</span>
+                        <span class="value" id="monthly-emi">NPR 0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Total Interest:" data-np="कुल ब्याज:">Total Interest:</span>
+                        <span class="value" id="total-interest">NPR 0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Total Amount:" data-np="कुल रकम:">Total Amount:</span>
+                        <span class="value" id="total-amount">NPR 0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Loan Tenure:" data-np="ऋण अवधि:">Loan Tenure:</span>
+                        <span class="value" id="loan-tenure-display">0 years</span>
+                    </div>
+                </div>
+                
+                <!-- Date Converter Results -->
+                <div id="date-results" style="display: none;">
+                    <div class="result-item">
+                        <span class="label" data-en="Result:" data-np="परिणाम:">Result:</span>
+                        <span class="value" id="date-result">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Days:" data-np="दिनहरू:">Days:</span>
+                        <span class="value" id="date-days">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Weeks:" data-np="हप्ताहहरू:">Weeks:</span>
+                        <span class="value" id="date-weeks">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label" data-en="Months:" data-np="महिनाहरू:">Months:</span>
+                        <span class="value" id="date-months">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
